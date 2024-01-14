@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+The `filtered_logger` supplies a class `RedactingFormatter`
+that inherits from `logging.Formatter`.
+It also supplies other methods that implements custom formatting
+"""
 import os
 import logging
 import mysql.connector
@@ -25,16 +30,15 @@ def filter_datum(fields: List[str], redaction: str,
     str:            A formatted string
     """
     for field in fields:
-        pattern = f"{field}=.+?{separator}"
-        replacement = f"{field}={redaction}{separator}"
-        message = re.sub(pattern, replacement, message)
+        message = re.sub(f"{field}=.*?{separator}",
+                         f"{field}={redaction}{separator}", message)
     return message
 
 
 class RedactingFormatter(logging.Formatter):
-    """ Redacting Formatter class
-        """
-
+    """
+    Redacting Formatter class
+    """
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
