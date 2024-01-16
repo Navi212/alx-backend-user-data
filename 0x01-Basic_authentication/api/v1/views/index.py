@@ -32,7 +32,7 @@ def unauthorized() -> None:
     Return:
       - Nothing
     """
-    abort(401, description="Unauthorized")
+    abort(401, "error: Unauthorized")
 
 
 @app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
@@ -41,4 +41,4 @@ def forbidden() -> None:
     Return:
       - Nothing
     """
-    abort(403, description="Forbidden")
+    abort(403, "error: Forbidden")
