@@ -16,6 +16,14 @@ class Auth:
             path = path + "/"
             if path in excluded_paths:
                 return False
+        # Implements wildcard functionality
+        for paths in excluded_paths:
+            wild_path = paths.split("/")
+            last_path = wild_path[-1]
+            if last_path.endswith("*"):
+                l_path = last_path.split("*")[0]
+                if l_path in path:
+                    return False
         return True
 
     def authorization_header(self, request=None) -> str:
