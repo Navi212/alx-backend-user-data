@@ -38,8 +38,8 @@ def before_request():
                      '/api/v1/auth_session/login/'
                      ]
     if auth.require_auth(request.path, excluded_list):
-        if auth.authorization_header(
-            request) is None and auth.session_cookie(request) is None:
+        cookie = auth.session_cookie(request)
+        if auth.authorization_header(request) and cookie is None:
             abort(401, "error: Unauthorized")
         if auth.current_user(request) is None:
             abort(403, "error: Forbidden")
