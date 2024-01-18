@@ -23,9 +23,10 @@ def login():
     for user in user_list:
         from api.v1.app import auth
         from os import getenv
-        session_cookie = auth.create_session(user.id)
-        response = jsonify(user.to_json())
+        session_id = auth.create_session(user.id)
+        user_id = auth.user_id_for_session_id(session_id)
+        response = jsonify(user_id.to_json())
         session_name = getenv("SESSION_NAME")
-        response.set_cookie(session_name, session_cookie)
+        response.set_cookie(session_name, session_id)
         return response
     return jsonify({"error": "wrong password"}), 401
