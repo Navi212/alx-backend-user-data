@@ -15,9 +15,9 @@ def session_login():
     email = request.form.get("email")
     password = request.form.get("password")
     if email == "" or email is None:
-        return jsonify({"error": "email missing"})
+        return jsonify({"error": "email missing"}), 400
     if password == "" or password is None:
-        return jsonify({"error": "password missing"})
+        return jsonify({"error": "password missing"}), 400
     user_list = User.search({"email": email})
     if not user_list or user_list is None:
         return jsonify({"error": "no user found for email"}), 404
