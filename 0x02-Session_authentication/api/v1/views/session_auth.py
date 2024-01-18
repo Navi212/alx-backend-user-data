@@ -10,7 +10,7 @@ from models.user import User
 
 @app_views.route('/auth_session/login', methods=["POST"], strict_slashes=False)
 def login():
-    """Implements a login session"""
+    """Implements an authentication, and login session"""
     email = request.form.get("email")
     password = request.form.get("password")
     if email == "" or not email:
