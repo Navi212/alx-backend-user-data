@@ -19,8 +19,8 @@ def session_login():
     if password == "" or password is None:
         return jsonify({"error": "password missing"}), 400
     user_list = User.search({"email": email})
-    if not user_list or user_list == []:
-        return jsonify({"error": "no user found for email"}), 404
+    if not user_list or user_list is None:
+        return jsonify({"error": "no user found for this email"}), 404
     for user in user_list:
         if user.is_valid_password(password):
             from api.v1.app import auth
