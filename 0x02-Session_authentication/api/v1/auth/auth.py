@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""The `auth` module supplies a class `Auth`"""
+"""The `auth` module"""
 from flask import request
 from typing import List, TypeVar
 import os
 
 
 class Auth:
-    """A base class for Authentication"""
+    """A class"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """Requires authentication method"""
         if path is None or excluded_paths is None or len(excluded_paths) < 1:
@@ -28,23 +28,21 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        """
-        Checks Authorization header and returns the
-        value for the Authorization header
-        """
+        """Checks Authorization header for requests"""
         if request is None:
             return None
-        elif not request.headers.get("Authorization"):
+        if request.headers.get("Authorization") is None:
             return None
         return request.headers.get("Authorization")
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """Checks current user"""
+        """Returns current user object of User class"""
         return None
 
     def session_cookie(self, request=None):
-        """Returns a cookie value from a request"""
+        """Returns the a cookie value/session_id as cookie value"""
         if request is None:
             return None
         session_name = os.getenv("SESSION_NAME")
-        return request.cookies.get(session_name)
+        value = request.cookies.get(session_name)
+        return value
