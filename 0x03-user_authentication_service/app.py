@@ -3,7 +3,7 @@
 The `app` module supplies our Flask app routes for different
 api end_points.
 """
-from flask import Flask, jsonify, request, abort, redirect, url_for
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 from sqlalchemy.orm.exc import NoResultFound
 from db import DB
@@ -53,7 +53,7 @@ def logout() -> str:
     if not user:
         abort(403)
     AUTH.destroy_session(user.id)
-    return redirect(url_for("/"))
+    return redirect("/")
 
 
 @app.route("/profile", methods=["GET"])
