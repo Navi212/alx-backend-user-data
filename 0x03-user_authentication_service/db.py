@@ -2,12 +2,11 @@
 """DB module
 """
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
-from typing import TypeVar, Dict
+from typing import Dict
 from user import Base, User
 
 
@@ -32,14 +31,14 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email: str, hashed_password: str) -> TypeVar("User"):
+    def add_user(self, email: str, hashed_password: str) -> User:
         """Adds a user to the db using the email and hashed_password params"""
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs: Dict) -> TypeVar("User"):
+    def find_user_by(self, **kwargs: Dict) -> User:
         """Finds first user in the db by **kwargs"""
         if not kwargs:
             raise InvalidRequestError
