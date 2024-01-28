@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"], strict_slashes=False)
-def index():
+def index() -> str:
     """Returns a json payload for the root route"""
     return jsonify({"message": "Bienvenue"})
 
@@ -45,7 +45,7 @@ def login() -> str:
 
 
 @app.route("/sessions", methods=["DELETE"], strict_slashes=False)
-def logout():
+def logout() -> str:
     """Logs out a user from a session and redirects to root '/' route"""
     session_id = request.cookies.get("session_id", None)
     try:
@@ -57,7 +57,7 @@ def logout():
 
 
 @app.route("/profile", methods=["GET"], strict_slashes=False)
-def profile():
+def profile() -> str:
     """Serves get request for user profile"""
     session_id = request.cookies.get("session_id", None)
     if session_id is None:
@@ -69,7 +69,7 @@ def profile():
 
 
 @app.route("/reset_password", methods=["POST"], strict_slashes=False)
-def get_reset_password_token():
+def get_reset_password_token() -> str:
     """Resets a password field"""
     email = request.form.get("email")
     try:
@@ -80,4 +80,4 @@ def get_reset_password_token():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000", debug=True)
+    app.run(host="0.0.0.0", port="5000")
