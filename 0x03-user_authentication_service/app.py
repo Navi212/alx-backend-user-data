@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 The `app` module supplies our Flask app routes for different
 api end_points.
@@ -13,13 +14,13 @@ AUTH = Auth()
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"], strict_slashes=False)
+@app.route("/", methods=["GET"])
 def index() -> str:
     """Returns a json payload for the root route"""
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route("/users", methods=["POST"], strict_slashes=False)
+@app.route("/users", methods=["POST"])
 def users() -> str:
     """Register user"""
     email = request.form.get("email")
@@ -31,7 +32,7 @@ def users() -> str:
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route("/sessions", methods=["POST"], strict_slashes=False)
+@app.route("/sessions", methods=["POST"])
 def login() -> str:
     """Logins in a user to a session and sets a session id to cookie"""
     email = request.form.get("email")
@@ -44,7 +45,7 @@ def login() -> str:
     return resp
 
 
-@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+@app.route("/sessions", methods=["DELETE"])
 def logout() -> str:
     """Logs out a user from a session and redirects to root '/' route"""
     session_id = request.cookies.get("session_id", None)
@@ -56,7 +57,7 @@ def logout() -> str:
         abort(403)
 
 
-@app.route("/profile", methods=["GET"], strict_slashes=False)
+@app.route("/profile", methods=["GET"])
 def profile() -> str:
     """Serves get request for user profile"""
     session_id = request.cookies.get("session_id", None)
@@ -68,7 +69,7 @@ def profile() -> str:
     abort(403)
 
 
-@app.route("/reset_password", methods=["POST"], strict_slashes=False)
+@app.route("/reset_password", methods=["POST"])
 def get_reset_password_token() -> str:
     """Resets a password field"""
     email = request.form.get("email")
