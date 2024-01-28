@@ -43,9 +43,9 @@ class DB:
         if not kwargs:
             raise InvalidRequestError
         user = self._session.query(User).filter_by(**kwargs).first()
-        if not user:
-            raise NoResultFound
-        return user
+        if user:
+            return user
+        raise NoResultFound
 
     def update_user(self, user_id: str, **kwargs: Dict) -> None:
         """Updates a user by user id"""
