@@ -3,7 +3,7 @@
 import bcrypt
 from db import DB
 from user import User
-from typing import TypeVar, Union
+from typing import Union
 from sqlalchemy.orm.exc import NoResultFound
 import uuid
 
@@ -27,7 +27,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str) -> TypeVar("User"):
+    def register_user(self, email: str, password: str) -> User:
         """Registers a user by email and password"""
         try:
             _ = self._db.find_user_by(email=email)
@@ -60,7 +60,7 @@ class Auth:
 
     def get_user_from_session_id(self,
                                  session_id: str
-                                 ) -> Union[TypeVar("User"), None]:
+                                 ) -> Union[User, None]:
         """Returns corresponding User or None from session_id"""
         if session_id is None:
             return None
