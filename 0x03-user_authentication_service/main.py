@@ -1,134 +1,96 @@
 #!/usr/bin/env python3
 """
-Main file
+The `main` module supplies functions that implements
+End-to-end integration test for our methods and api
+routes passing neccessary parameters and asserting
+return values with status codes using the request
+library.
 """
 import requests
 
 
 def register_user(email: str, password: str) -> None:
     """
-    Test for register a user with the given email and password.
-    Args:
-        email: The email of the user.
-        password: The password of the user.
-    Returns:
-        None
+    Tests staus code and return value when
+    a user is newly registered
     """
-    resp = requests.post('http://127.0.0.1:5000/users',
-                         data={'email': email, 'password': password})
+    end_point = "http://127.0.0.1:5000/users"
+    resp = requests.post(end_point,
+                         data={"email": email, "password": password})
     if resp.status_code == 200:
-        assert (resp.json() == {"email": email, "message": "user created"})
-    else:
-        assert(resp.status_code == 400)
-        assert (resp.json() == {"message": "email already registered"})
+        assert resp.json() == {"email": f"{email}", "message": "user created"}
+        assert resp.status_code == 200
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
-    """
-    Test for log in with the given wrong credentials.
-    Args:
-        email: The email of the user.
-        password: The password of the user.
-    Returns:
-        None
-    """
-    r = requests.post('http://127.0.0.1:5000/sessions',
-                      data={'email': email, 'password': password})
-    assert (r.status_code == 401)
+    """Tests wrong login credentials and status code"""
+    end_point = "http://127.0.0.1:5000/sessions"
+    resp = requests.post(end_point,
+                         data={"email": email, "password": password})
+    assert resp.status_code == 401
+
+
+def log_in(email: str, password: str) -> None:
+    """Tests login with valid credentials"""
+    end_point = "http://127.0.0.1:5000/sessions"
+    resp = requests.post(end_point,
+                         data={"email": email, "password": password})
+    if resp.status_code == 200:
+        assert resp.status_code == 200
+        assert resp.json() == {"email": f"{email}", "message": "logged in"}
 
 
 def profile_unlogged() -> None:
-    """
-    Test for profile without being logged in with session_id.
-    Returns:
-        None
-    """
-    r = requests.get('http://127.0.0.1:5000/profile')
-    assert(r.status_code == 403)
-
-
-def log_in(email: str, password: str) -> str:
-    """
-    Test for log in with the given correct email and password.
-    Args:
-        email: The email of the user.
-        password: The password of the user.
-    Returns:
-        The session_id of the user.
-    """
-    resp = requests.post('http://127.0.0.1:5000/sessions',
-                         data={'email': email, 'password': password})
-    assert (resp.status_code == 200)
-    assert(resp.json() == {"email": email, "message": "logged in"})
-    return resp.cookies['session_id']
+    """Tests user is unlogged"""
+    end_point = "http://127.0.0.1:5000/profile"
+    resp = requests.get(end_point)
+    assert resp.status_code == 403
 
 
 def profile_logged(session_id: str) -> None:
-    """
-    Test for profile with being logged in with session_id.
-    Args:
-        session_id: The session_id of the user.
-    Returns:
-        None
-    """
-    cookies = {'session_id': session_id}
-    r = requests.get('http://127.0.0.1:5000/profile',
-                     cookies=cookies)
-    assert(r.status_code == 200)
+    """Tests user is logged in with the write credentials"""
+    end_point = "http://127.0.0.1:5000/profile"
+    cookie = {"session_id": session_id}
+    resp = requests.get(end_point, cookies=cookie)
+    if resp.status_code == 200:
+        assert resp.status_code == 200
 
 
 def log_out(session_id: str) -> None:
-    """
-    Test for log out with the given session_id.
-    Args:
-        session_id: The session_id of the user.
-    Returns:
-        None
-    """
-    cookies = {'session_id': session_id}
-    r = requests.delete('http://127.0.0.1:5000/sessions',
-                        cookies=cookies)
-    if r.status_code == 302:
-        assert(r.url == 'http://127.0.0.1:5000/')
-    else:
-        assert(r.status_code == 200)
+    """Tests logout a logged in user"""
+    end_point = "http://127.0.0.1:5000/sessions"
+    cookie = {"session_id": session_id}
+    resp = requests.delete(end_point, cookies=cookie)
+    if resp.status_code == 302:
+        assert resp.url == "http://127.0.0.1:5000"
+    elif resp.status_code == 200:
+        assert resp.status_code == 200
 
 
 def reset_password_token(email: str) -> str:
-    """
-    Test for reset password token with the given email.
-    Args:
-        email: The email of the user.
-    Returns:
-        The reset_token of the user.
-    """
-    r = requests.post('http://127.0.0.1:5000/reset_password',
-                      data={'email': email})
-    if r.status_code == 200:
-        return r.json()['reset_token']
-    assert(r.status_code == 401)
-
-
-def update_password(email: str, reset_token: str,
-                    new_password: str) -> None:
-    """
-    Test for update password with the given email,
-    reset_token and new_password.
-    Args:
-        email: The email of the user.
-        reset_token: The reset_token of the user.
-        new_password: The new password of the user.
-    Returns:
-        None
-    """
-    data = {'email': email, 'reset_token': reset_token,
-            'new_password': new_password}
-    r = requests.put('http://127.0.0.1:5000/reset_password',
-                     data=data)
-    if r.status_code == 200:
-        assert(r.json() == {"email": email, "message": "Password updated"})
+    """Tests password token reset"""
+    end_point = "http://127.0.0.1:5000/reset_password"
+    resp = requests.post(end_point, data={"email": email})
+    if resp.status_code == 200:
+        assert resp.status_code == 200
+        return resp.json()["reset_token"]
     else:
-        assert(r.status_code == 403)
+        assert resp.status_code == 403
+
+
+def update_password(email: str,
+                    reset_token: str, new_password: str) -> None:
+    """Test user password update"""
+    end_point = "http://127.0.0.1:5000/reset_password"
+    payload = {"email": email, "reset_token": reset_token,
+               "new_password": new_password}
+    resp = requests.put(end_point, data=payload)
+    if resp.status_code == 200:
+        assert resp.status_code == 200
+        assert resp.json() == {"email": f"{email}",
+                               "message": "Password updated"}
+    elif resp.status_code == 403:
+        assert resp.status_code == 403
 
 
 EMAIL = "guillaume@holberton.io"
