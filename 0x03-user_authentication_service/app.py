@@ -49,12 +49,11 @@ def login() -> str:
 def logout() -> str:
     """Logs out a user from a session and redirects to root '/' route"""
     session_id = request.cookies.get("session_id", None)
-    try:
-        user = AUTH.get_user_from_session_id(session_id)
-        AUTH.destroy_session(user.id)
-        return redirect(url_for("/"))
-    except NoResultFound:
+    user = AUTH.get_user_from_session_id(session_id)
+    if not user:
         abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect(url_for("/"))
 
 
 @app.route("/profile", methods=["GET"])
