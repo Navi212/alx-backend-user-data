@@ -1,4 +1,7 @@
-"""The `app` supplies our Flask app for routes"""
+"""
+The `app` module supplies our Flask app routes for different
+api end_points.
+"""
 from flask import Flask, jsonify, request, abort, redirect, url_for
 from auth import Auth
 from sqlalchemy.orm.exc import NoResultFound
