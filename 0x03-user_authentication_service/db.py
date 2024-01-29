@@ -37,7 +37,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs: dict) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """Finds first user in the db by **kwargs"""
         if not kwargs:
             raise InvalidRequestError
@@ -46,7 +46,7 @@ class DB:
             return user
         raise NoResultFound
 
-    def update_user(self, user_id: str, **kwargs: dict) -> None:
+    def update_user(self, user_id: str, **kwargs) -> None:
         """Updates a user by user id"""
         if not kwargs:
             raise InvalidRequestError
