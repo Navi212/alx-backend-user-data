@@ -38,7 +38,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """Finds first user in the db by **kwargs"""
         if not kwargs:
             raise InvalidRequestError
@@ -47,9 +47,9 @@ class DB:
             return user
         raise NoResultFound
 
-    def update_user(self, user_id: str, **kwargs: Dict[str, str]) -> None:
+    def update_user(self, user_id: str, **kwargs) -> None:
         """Updates a user by user id"""
-        if not kwargs:
+        if not kwargs or kwargs is None:
             raise InvalidRequestError
         user = self.find_user_by(id=user_id)
         for key, val in kwargs.items():
